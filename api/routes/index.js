@@ -2,13 +2,14 @@ import express from "express";
 
 import { getReelList, getExpList, getInfo } from "../controller/profile.js";
 import { addNewExp, deleteExp } from "../controller/editExperience.js";
-import { uploadReel, confirmUpload } from "../controller/reelUpload.js";
+import { uploadReel, confirmUpload, reelVote } from "../controller/reel.js";
 import { editInfo } from "../controller/editProfile.js";
 import { search } from "../controller/search.js"
 import { getExploreReels } from "../controller/explore.js";
 import { getLeaderBoard } from "../controller/leaderBoard.js";
-import { uploadDiscussion, getDiscussions } from "../controller/discussion.js";
+import { uploadDiscussion, getDiscussions, discussionVote } from "../controller/discussion.js";
 import { discussionComments, reelComments } from "../controller/comments.js";
+import { signin, signup } from "../controller/authentication.js";
 
 var router = express.Router();
 
@@ -33,10 +34,12 @@ router.post('/discussions/new', uploadDiscussion);
 router.post('/profile/experience/add', addNewExp);
 router.post('/reels/upload', confirmUpload);
 
-// router.post('/signup', );
-// router.post('/signin',);
+router.post('/signup', signup);
+router.post('/signin', signin);
 // router.post('/signout',);
 
+router.put('/reels/editvote', reelVote);
+router.put('/discussions/editvote', discussionVote);
 router.put('/profile/experience/delete', deleteExp);
 router.put('/profile/edit', editInfo);
 

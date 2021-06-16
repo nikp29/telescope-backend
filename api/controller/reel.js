@@ -164,4 +164,31 @@ const getWeekstamp = (moment_) => {
     return Math.floor((Math.floor(moment_.unix().valueOf() / 86400) - 4) / 7);
 };
 
-export { uploadReel, confirmUpload };
+// const editVote = async (upvotes, id, setUpvoted) => {
+const reelVote = async (req, res) => {
+    // const uid = await AsyncStorage.getItem("token");
+    const uid = req.body.uid;
+    const upvotes = req.body.upvotes;
+    const id = req.body.reelId;
+    const reelsRef = firebase.firestore().collection("reels");
+
+    let new_upvotes = upvotes;
+    if (upvotes.includes(uid)) {
+        new_upvotes.splice(new_upvotes.indexOf(uid), 1);
+        await reelsRef
+        .doc(id)
+        .update({ upvotes: new_upvotes, num_upvotes: new_upvotes.length });
+    } else {
+        // reel has not already been upvoted
+        new_upvotes.push(uid);
+        await reelsRef
+        .doc(id)
+        .update({ upvotes: new_upvotes, num_upvotes: new_upvotes.length });
+    }
+    res.status(200);
+    res.json({
+        "data" : "updated"
+    });
+};
+
+export { uploadReel, confirmUpload, reelVote };

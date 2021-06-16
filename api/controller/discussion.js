@@ -50,4 +50,33 @@ const getDiscussions = async (req, res) => {
     });
 };
 
-export { uploadDiscussion, getDiscussions };
+
+// const discussionVote = async (upvotes, id, setUpvoted) => {
+const discussionVote = async (req, res) => {
+  // const uid = await AsyncStorage.getItem("token");
+  const uid = req.body.uid;
+  const id = req.body.discussionId;
+  const upvotes = req.body.upvotes;
+  const discussionsRef = firebase.firestore().collection("discussions");
+
+  let new_upvotes = upvotes;
+  if (upvotes.includes(uid)) {
+    new_upvotes.splice(new_upvotes.indexOf(uid), 1);
+    await discussionsRef
+      .doc(id)
+      .update({ upvotes: new_upvotes, num_upvotes: new_upvotes.length });
+    // setUpvoted(false);
+  } else {
+    // discussion has not already been upvoted
+    new_upvotes.push(uid);
+    await discussionsRef
+      .doc(id)
+      .update({ upvotes: new_upvotes, num_upvotes: new_upvotes.length });
+    // setUpvoted(true);
+  }
+  res.status(200).json({
+    data : "updated"
+  });
+};
+
+export { uploadDiscussion, getDiscussions, discussionVote };
